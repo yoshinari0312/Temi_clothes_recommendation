@@ -61,7 +61,7 @@ def record():
 
 
 # メイン
-def main(input_mode):
+def main(mode):
 
     def generating_text():
         generated_text = GPT_talk(input_prompt)
@@ -70,7 +70,7 @@ def main(input_mode):
 
     input_prompt = None
 
-    if input_mode == True:
+    if mode == True:
         input_prompt = record()
     else:
         input_prompt = input("[YOU] ")
@@ -86,7 +86,7 @@ def main(input_mode):
         while(thread1.is_alive()): # スレッドの実行が終わるまでループ
             x = random.randint(0, 1)
             y = 4
-            if input_mode == True:
+            if mode == True:
                 servermessege = ""
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     # サーバを指定
@@ -102,7 +102,7 @@ def main(input_mode):
         generated_text = q.get()
         print("[GPT]", generated_text)
 
-        if input_mode == True: # pepperと通信を行う さらにテキストを分割
+        if mode == True: # pepperと通信を行う さらにテキストを分割
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 # サーバを指定
                 s.connect((ip, port))

@@ -94,11 +94,10 @@ public class MainActivity extends AppCompatActivity  implements OnRobotReadyList
                         //int find_colon = received.indexOf(':');
                         if (received != null) {
                             System.out.println(received);
-                            String[] command = received.split(":");
 
                             // Declare a queue of phrases
                             final Queue<String> queue = new LinkedList<>();
-                            queue.add(command[0]);
+                            queue.add(received);
 
                             // Register TTS listener
                             mRobot.addTtsListener(new Robot.TtsListener() {
