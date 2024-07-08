@@ -86,18 +86,15 @@ def main(mode):
         while(thread1.is_alive()): # スレッドの実行が終わるまでループ
             x = random.randint(0, 1)
             y = 4
-            if mode == True:
-                servermessege = ""
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    # サーバを指定
-                    s.connect((ip, port))
-                    # 回答をpepperに送信
-                    s.sendall((backchannel[x]+':none'+'\r\n').encode())
-                    servermessege = s.recv(1024).decode()
-                time.sleep(y)
-            # else:
-            #     print(backchannel[x])
-            #     time.sleep(1)
+            # if mode == True:
+            #     servermessege = ""
+            #     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            #         # サーバを指定
+            #         s.connect((ip, port))
+            #         # 回答をpepperに送信
+            #         s.sendall((backchannel[x]+'\r\n').encode())
+            #         servermessege = s.recv(1024).decode()
+            #     time.sleep(y)
 
         generated_text = q.get()
         print("[GPT]", generated_text)
@@ -120,8 +117,8 @@ if __name__ == "__main__":
     conversation_history = [] # 会話履歴を格納するためのリストを初期化
 
     # IPアドレスを変更する必要アリ
-    ip = "192.168.1.97"
+    ip = "192.168.1.64"
     port = 5530
 
     while True:
-        main(False) # mainの引数によって、音声でtemiとやりとりするか（本番用）、temiに接続せずテキストでやりとりするか（GPTの動作確認）を選べる
+        main(True) # mainの引数によって、音声でtemiとやりとりするか（本番用）、temiに接続せずテキストでやりとりするか（GPTの動作確認）を選べる
