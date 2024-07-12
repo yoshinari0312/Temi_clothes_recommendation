@@ -4,7 +4,6 @@ from openai import OpenAI
 import speech_recognition as sr
 from colorama import Fore, Back, Style
 import threading
-import time
 from queue import Queue
 import random
 
@@ -99,7 +98,7 @@ def main(mode):
         generated_text = q.get()
         print("[GPT]", generated_text)
 
-        if mode == True: # pepperと通信を行う さらにテキストを分割
+        if mode == True: # temiと通信を行う
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 # サーバを指定
                 s.connect((ip, port))
