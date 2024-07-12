@@ -44,13 +44,14 @@ def main(mode):
                 '''
 
         # 案内
-        if 5<= turn and turn < 8:
+        elif 5<= turn and turn < 8:
+            if turn == 5:
+                commonGPT.conversation_history_tmp_reset()
+
             print("<introduce_clothes>")
             generated_text = commonGPT.GPT_introduce_clothes(input_prompt) # | はここに移動を挟むことを表す。javaの方でsplitする
 
             if turn == 5:
-                commonGPT.conversation_history_tmp_reset()
-
                 score = commonGPT.GPT_score_judge(input_prompt)
                 print("score: " + str(score))
                 f.write("score: " + str(score) + '\n')
@@ -64,14 +65,14 @@ def main(mode):
                 '''
 
         # 感想
-        if turn == 8:
+        elif turn == 8:
             commonGPT.conversation_history_tmp_reset()
 
             print("<result>")
             generated_text = commonGPT.GPT_result(input_prompt)
 
         # 感想の分岐
-        if turn == 9:
+        elif turn == 9:
             commonGPT.conversation_history_tmp_reset()
 
             result = commonGPT.GPT_reaction_judge(input_prompt)
@@ -87,7 +88,7 @@ def main(mode):
                 generated_text = commonGPT.GPT_introduce_clothes_more(input_prompt) # | はここに移動を挟むことを表す。javaの方でsplitする
 
         # もう一回聞く
-        if turn == 10 and good == False:
+        elif turn == 10 and good == False:
             commonGPT.conversation_history_tmp_reset()
 
             result = commonGPT.GPT_reaction_judge(input_prompt)
@@ -104,7 +105,7 @@ def main(mode):
                 generated_text = commonGPT.GPT_badend(input_prompt)
 
         # 終わった後
-        if 11 <= turn or good == True or bad == True:
+        else:
             print("<talk>")
             generated_text = commonGPT.GPT_talk(input_prompt)
 

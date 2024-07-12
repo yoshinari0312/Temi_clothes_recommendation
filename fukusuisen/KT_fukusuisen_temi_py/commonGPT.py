@@ -63,8 +63,6 @@ def GPT_introduce_clothes(prompt):
     # ユーザーの質問を会話履歴に追加
     conversation_history.append({"role": "user", "content": prompt})
     conversation_history_tmp.append({"role": "user", "content": prompt})
-    
-    print(conversation_history_tmp)
 
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
@@ -237,8 +235,17 @@ def GPT_score_judge(prompt):
 def GPT_reaction_judge(prompt):
 
     content = "・userが不満に思っているかどうかをを0か1で評価してください。\n\
-                ・0が不満に思っている、1が不満に思っていないです。\n\
-                ・半角数字のみで回答してください。"
+                ・0が不満に思っている、1が満足しているです。\n\
+                ・半角数字のみで回答してください。\n\n\
+                ＜例＞\n\
+                user「よかったよ」 -> 1\n\
+                user「最初のかな」 -> 1\n\
+                user「2つ目」 -> 1\n\
+                user「3つ目のやつ」 -> 1\n\
+                user「まあまあ」 -> 0\n\
+                user「微妙」 -> 0\n\
+                user「特にない」 -> 0\n\
+                user「あんまり」 -> 0"
 
     response = openai_client.chat.completions.create(
         model="gpt-4o",

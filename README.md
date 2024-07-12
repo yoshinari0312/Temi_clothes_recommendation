@@ -12,7 +12,7 @@ temiにいれてアプリを起動するとtemi上でサーバが立つ
 手元で動かすプログラム(Python)   
 temiサーバにアクセスする  
 基本的に大まかな処理はこちらで行い、temiには発言させる内容のみ送る
-##fukusuisen
+## fukusuisen
 ### KT_fukusuisen_temi
 temiに入れるアプリ(Java)  
 temiにいれてアプリを起動するとtemi上でサーバが立つ
