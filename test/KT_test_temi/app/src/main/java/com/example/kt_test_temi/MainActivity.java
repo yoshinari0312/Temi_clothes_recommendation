@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.listeners.OnRobotReadyListener;
+import com.robotemi.sdk.navigation.model.Position;
 
 public class MainActivity extends AppCompatActivity implements OnRobotReadyListener {
     private static Robot mRobot;
@@ -40,6 +41,18 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         if (isReady) {
             Log.i(TAG, "Robot is ready");
             mRobot.hideTopBar(); // hide temi's ActionBar when skill is active
+
+            mRobot.goTo("ペッパー");
+
+            float x = mRobot.getPosition().getX();
+            float y = mRobot.getPosition().getY();
+            float yaw = mRobot.getPosition().getYaw();
+            int tilt = mRobot.getPosition().getTiltAngle();
+
+
+            Log.i(TAG, Double.toString(x) + " / " + Double.toString(y) + " / " + Double.toString(yaw) + " / " + Integer.toString(tilt));
+
+
         }
     }
 }

@@ -60,7 +60,7 @@ def main(mode):
                 '''
             
         # 案内
-        elif 6<= turn and turn < 9:
+        elif 6 <= turn and turn < 9:
             if turn == 6:
                 commonGPT.conversation_history_tmp_reset()
 
@@ -80,12 +80,15 @@ def main(mode):
                 f.write("recommend: " + str(recommend) + '\n')
 
                 generated_text = generated_text + ":move:" + str(recommend[0])
+                common.send_id(recommend[0])
 
             if turn == 7:
                 generated_text = generated_text + ":move:" + str(recommend[1])
+                common.send_id(recommend[1])
 
             if turn == 8:
                 generated_text = generated_text + ":move:" + str(recommend[2])
+                common.send_id(recommend[2])
 
 
         # 感想
@@ -113,6 +116,7 @@ def main(mode):
                 print("<introduce_clothes_more>")
                 generated_text = commonGPT.GPT_introduce_clothes_more(input_prompt) # | はここに移動を挟むことを表す。javaの方でsplitする
                 generated_text = generated_text + ":move:" + str(recommend[3])
+                common.send_id(recommend[3])
 
         # もう一回聞く
         elif turn == 11 and good == False:
@@ -210,4 +214,4 @@ if __name__ == "__main__":
     # f = 0
     with open('./log/log_'+ datetime.datetime.now().strftime('%Y%m%d_%H%M%S') + '_main.txt', mode='w') as f:
         while True:
-            main(False)
+            main(True)

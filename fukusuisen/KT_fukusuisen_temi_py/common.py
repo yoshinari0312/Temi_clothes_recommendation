@@ -2,6 +2,7 @@ import speech_recognition as sr
 from colorama import Fore, Back, Style
 import re
 import random
+import requests
 import commonGPT
 
 # IPアドレスを変更する必要アリ
@@ -64,3 +65,15 @@ def text_judge(text):
     text = text + ":none"
     return text
 
+
+def set_id(id):
+    server_url = 'http://localhost:4999/set_id'
+    response = requests.post(server_url, json={'id': id})
+    # if response.status_code == 200:
+    #     print("ID set successfully")
+    # else:
+    #     print(f"Failed to set ID: {response.status_code}, {response.text}")
+
+def process_id():
+    server_url = 'http://localhost:4999/process_id'
+    response = requests.get(server_url)

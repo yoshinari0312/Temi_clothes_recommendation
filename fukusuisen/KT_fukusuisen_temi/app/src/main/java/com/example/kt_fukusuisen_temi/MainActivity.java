@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             Log.i(TAG, "Robot is ready");
             mRobot.hideTopBar(); // hide temi's ActionBar when skill is active
 
-            TtsRequest ttsRequest = TtsRequest.create("プログラムを起動しました", false, TtsRequest.Language.JA_JP);
+            TtsRequest ttsRequest = TtsRequest.create("プログラムを起動しましたわああああああ", false, TtsRequest.Language.JA_JP);
             mRobot.speak(ttsRequest);
 
             new TCPServer().execute();
@@ -100,31 +100,132 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
                             if (received != null) {
                                 System.out.println(received);
+                                Log.i(TAG, received);
 
-                                // Declare a queue of phrases
-                                final Queue<String> queue = new LinkedList<>();
-                                queue.add(received);
-                                queue.add(""); // ダミーのキュー
+                                String[] command = received.split(":");
 
-                                // Register TTS listener
-                                mRobot.addTtsListener(new Robot.TtsListener() {
-                                    @Override
-                                    public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
-                                        if (ttsRequest.getStatus() == TtsRequest.Status.COMPLETED) {
-                                            if (!queue.isEmpty()) {
-                                                mRobot.speak(TtsRequest.create(queue.remove()));
+                                // 発話とジェスチャを同時にさせる
+                                if (command[1].equals("none")) {
+                                    // Declare a queue of phrases
+                                    final Queue<String> queue = new LinkedList<>();
+
+                                    queue.add(command[0]);
+                                    queue.add(""); // ダミーのキュー
+
+                                    // Register TTS listener
+                                    mRobot.addTtsListener(new Robot.TtsListener() {
+                                        @Override
+                                        public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
+                                            if (ttsRequest.getStatus() == TtsRequest.Status.COMPLETED) {
+                                                if (!queue.isEmpty()) {
+                                                    mRobot.speak(TtsRequest.create(queue.remove()));
+                                                }
                                             }
                                         }
+                                    });
+
+                                    // Command robot to speak
+                                    mRobot.speak(TtsRequest.create(queue.remove(), false, TtsRequest.Language.JA_JP));
+
+                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+                                    while (!queue.isEmpty()) {
                                     }
-                                });
+                                    bw.write("OK" + "\n");
+                                    bw.flush();
+                                }
+                                else if(command[1].equals("picture")){
 
-                                // Command robot to speak
-                                mRobot.speak(TtsRequest.create(queue.remove(), false, TtsRequest.Language.JA_JP));
 
-                                // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
-                                while(!queue.isEmpty()){}
-                                bw.write("OK"+"\n");
-                                bw.flush();
+                                    // 画像の表示
+
+
+                                    // Declare a queue of phrases
+                                    final Queue<String> queue = new LinkedList<>();
+                                    queue.add(command[0]);
+                                    queue.add(""); // ダミーのキュー
+
+                                    // Register TTS listener
+                                    mRobot.addTtsListener(new Robot.TtsListener() {
+                                        @Override
+                                        public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
+                                            if (ttsRequest.getStatus() == TtsRequest.Status.COMPLETED) {
+                                                if (!queue.isEmpty()) {
+                                                    mRobot.speak(TtsRequest.create(queue.remove()));
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    // Command robot to speak
+                                    mRobot.speak(TtsRequest.create(queue.remove(), false, TtsRequest.Language.JA_JP));
+
+                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+                                    while (!queue.isEmpty()) {
+                                    }
+                                    bw.write("OK" + "\n");
+                                    bw.flush();
+                                }
+                                else if(command[1].equals("move")){
+
+                                    String[] move_text = command[0].split(";");
+
+                                    // Declare a queue of phrases
+                                    final Queue<String> queue = new LinkedList<>();
+                                    queue.add(move_text[0]);
+                                    queue.add(""); // ダミーのキュー
+
+                                    // Register TTS listener
+                                    mRobot.addTtsListener(new Robot.TtsListener() {
+                                        @Override
+                                        public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
+                                            if (ttsRequest.getStatus() == TtsRequest.Status.COMPLETED) {
+                                                if (!queue.isEmpty()) {
+                                                    mRobot.speak(TtsRequest.create(queue.remove()));
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    // Command robot to speak
+                                    mRobot.speak(TtsRequest.create(queue.remove(), false, TtsRequest.Language.JA_JP));
+
+                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+                                    while (!queue.isEmpty()) {
+                                    }
+
+
+                                    // 移動
+                                    mRobot.goTo("ペッパー");
+
+
+
+                                    // Declare a queue of phrases
+                                    queue.add(move_text[1]);
+                                    queue.add(""); // ダミーのキュー
+
+                                    // Register TTS listener
+                                    mRobot.addTtsListener(new Robot.TtsListener() {
+                                        @Override
+                                        public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
+                                            if (ttsRequest.getStatus() == TtsRequest.Status.COMPLETED) {
+                                                if (!queue.isEmpty()) {
+                                                    mRobot.speak(TtsRequest.create(queue.remove()));
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                    // Command robot to speak
+                                    mRobot.speak(TtsRequest.create(queue.remove(), false, TtsRequest.Language.JA_JP));
+
+                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+                                    while (!queue.isEmpty()) {
+                                    }
+
+
+                                    bw.write("OK" + "\n");
+                                    bw.flush();
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
