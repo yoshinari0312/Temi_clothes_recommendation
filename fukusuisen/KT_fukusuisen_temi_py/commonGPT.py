@@ -31,7 +31,7 @@ def GPT_greet_and_question(prompt):
                         ・50文字以内で話してください。\n\
                         ・会話の始めに自己紹介をし、これから見せる服を10点満点で評価するようuserに話してください。\n\
                         ・ただし、質問や雑談には適宜回答してください。\n\
-                        ・服は3回見せます。\n\n\
+                        ・服は4回見せます。\n\n\
                         ＜会話例＞\n\
                         user「こんにちは。」\n\
                         temi「こんにちは、私は服推薦ロボットのtemiです。今からいくつか服を見せるので、10点満点で評価してください。」\n\
@@ -40,6 +40,8 @@ def GPT_greet_and_question(prompt):
                         user「5点かな。」\n\
                         temi「ふむふむ、ではこちらは？」\n\
                         user「8点。」\n\
+                        temi「ではこちらは？」\n\
+                        user「3点。」\n\
                         temi「なるほど、ではこちらはいかがでしょう？」\n\
                         user「7点だな。」"
         }] + conversation_history_tmp,
@@ -73,14 +75,15 @@ def GPT_introduce_clothes(prompt):
             "content": "・あなたは服推薦ロボットのtemiです。\n\
                         ・50文字以内で話してください。\n\
                         ・おすすめの服まで案内することを伝えた後、|と出力し、続いて服の感想を尋ねてください。\n\
+                        ・userが具体的な感想を言った場合、それに対する返答を一文でしたのち、おすすめの服まで案内することを伝えた後、|と出力し、続いて服の感想を尋ねてください。\n\
                         ・3回くりかえしてください。\n\n\
                         ＜会話例＞\n\
                         user「8点。」\n\
                         temi「ありがとうございます。ではおすすめの服まで案内します。|こちらはいかがでしょうか？」\n\
                         user「結構いいね。」\n\
                         temi「続いて他のも案内します。|こちらはどうでしょう？」\n\
-                        user「これもいいね。」\n\
-                        temi「もう一つ案内します。|こちらはいかがでしょう？」\n\
+                        user「色合いが青いのがいいね。」\n\
+                        temi「青いと爽やかなイメージがあっていいですよね。もう一つ案内します。|こちらはいかがでしょう？」\n\
                         user「これはまあまあかな。」"
         }] + conversation_history_tmp,
         temperature=1,
@@ -99,15 +102,36 @@ def GPT_introduce_clothes(prompt):
 
 # 感想を聞く
 def GPT_result(prompt):
-    thanks_list = ['お好みの服はありましたか？', 'お好みの服はございましたか？']
-    x = random.randint(0, len(thanks_list)-1)
-    message = thanks_list[x]
-
+    # ユーザーの質問を会話履歴に追加
     conversation_history.append({"role": "user", "content": prompt})
     conversation_history_tmp.append({"role": "user", "content": prompt})
+
+    # GPT-4モデルを使用してテキストを生成
+    response = openai_client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+        {
+            "role": "system",
+            "content": "・あなたは服推薦ロボットのtemiです。\n\
+                        ・50文字以内で話してください。\n\
+                        ・好みの服があったかどうかを尋ねてください。\n\
+                        ・userが具体的な感想を言った場合、それに対する同意を一文でしたのち、好みの服があったかどうかを尋ねてください。\n\n\
+                        ＜会話例＞\n\
+                        user「青いのがいいね。」\n\
+                        temi「青いと爽やかなイメージがあっていいですよね。お好みの服はございましたか？」"
+        }] + conversation_history_tmp,
+        temperature=1,
+        max_tokens=512,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    message = response.choices[0].message.content.strip()
+    
+    # アシスタントの回答を会話履歴に追加
     conversation_history.append({"role": "assistant", "content": message})
     conversation_history_tmp.append({"role": "assistant", "content": message})
-
+    
     return message
 
 # 気に入ったのがあれば
@@ -138,8 +162,7 @@ def GPT_introduce_clothes_more(prompt):
             "role": "system",
             "content": "・あなたは服推薦ロボットのtemiです。\n\
                         ・50文字以内で話してください。\n\
-                        ・追加でもう一個おすすめの服まで案内することを伝えた後、|と出力し、続いて服の感想を尋ねてください。\n\
-                        ・ただし、質問や雑談には適宜回答してください。\n\n\
+                        ・追加でもう一個おすすめの服まで案内することを伝えた後、|と出力し、続いて服の感想を尋ねてください。\n\n\
                         ＜会話例＞\n\
                         user「どれもあんまりかな。」\n\
                         temi「そうですか、ではもう一つだけ案内させてください。|こちらはいかがでしょうか？」"
