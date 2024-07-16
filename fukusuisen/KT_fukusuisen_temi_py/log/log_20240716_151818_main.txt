@@ -1,0 +1,8 @@
+[YOU] yaa
+[GPT] こんにちは、私は服推薦ロボットのtemiです。今からいくつか服を見せるので、10点満点で評価してください。:none
+[YOU] ok
+[GPT] こちらの服は何点ですか？:picture:41
+[YOU] 	4tennkana
+score: 4
+[GPT] ふむふむ、次はこちらはいかがでしょう？:picture:8
+[YOU] ８点

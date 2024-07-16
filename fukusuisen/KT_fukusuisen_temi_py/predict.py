@@ -20,41 +20,18 @@ def set_seed(seed):
 	SEED = seed
 	random.seed(SEED)
 
-def user_ask(id):
+def show_image(id):
 	ask_image = cv2.imread(f"images/{id}.jpg")
 	cv2.imshow(f"image_{id}", ask_image)
 	cv2.waitKey(300)
+	return id
+
+def user_ask(id):
 	pref = input(f"input preference of {id} (0-10):")
 	pref = int(pref)
 	return pref
 
-def predict_finalpref():
-	lasso = sklearn.linear_model.Lasso()
-	x_train = train[candidate]
-	y_train = train.drop(candidate, axis=1)
-	column_names = y_train.columns
-
-	lasso.fit(x_train, y_train)
-	x_test = np.array([user_pref])
-
-	y_pred = lasso.predict(x_test)
-
-	pref_predict = y_pred[0].argsort()[::-1]
-	final_id = y_train.columns[pref_predict[0]]
-
-	# 好み1～5位
-	print("1st:", final_id, y_pred[0][pref_predict[0]])
-	print("2nd:", y_train.columns[pref_predict[1]], y_pred[0][pref_predict[1]])
-	print("3rd:", y_train.columns[pref_predict[2]], y_pred[0][pref_predict[2]])
-	print("4th:", y_train.columns[pref_predict[3]], y_pred[0][pref_predict[3]])
-	print("5th:", y_train.columns[pref_predict[4]], y_pred[0][pref_predict[4]])
-
-	# 最も好む服
-	final_image = cv2.imread(f"images/{final_id}.jpg")
-	cv2.imshow(f"image_{final_id}", final_image)
-	cv2.waitKey(10000)
-
-def predict_pref():
+def predict_pref_pre():
 	lasso = sklearn.linear_model.Lasso()
 	x_train = train[candidate]
 	y_train = train.drop(candidate, axis=1)
@@ -71,8 +48,42 @@ def predict_pref():
 	#N番目に好みそうなのは，y_train.columns[pref_predict[N]]で表せる
 
 	candidate.append(ask_id)
+	show_image(ask_id)
+	
+	return ask_id
+
+def predict_pref(ask_id):
 	score = user_ask(ask_id)
 	user_pref.append(score)
+
+def predict_finalpref():
+	lasso = sklearn.linear_model.Lasso()
+	x_train = train[candidate]
+	y_train = train.drop(candidate, axis=1)
+	column_names = y_train.columns
+
+	lasso.fit(x_train, y_train)
+	x_test = np.array([user_pref])
+
+	y_pred = lasso.predict(x_test)
+
+	pref_predict = y_pred[0].argsort()[::-1]
+	final_id = y_train.columns[pref_predict[0]]
+
+	# 好み1～5位
+	# print("1st:", final_id, y_pred[0][pref_predict[0]])
+	# print("2nd:", y_train.columns[pref_predict[1]], y_pred[0][pref_predict[1]])
+	# print("3rd:", y_train.columns[pref_predict[2]], y_pred[0][pref_predict[2]])
+	# print("4th:", y_train.columns[pref_predict[3]], y_pred[0][pref_predict[3]])
+	# print("5th:", y_train.columns[pref_predict[4]], y_pred[0][pref_predict[4]])
+
+	# 最も好む服
+	final_image = cv2.imread(f"images/{final_id}.jpg")
+	cv2.imshow(f"image_{final_id}", final_image)
+	cv2.waitKey(300)
+
+	return [final_id, y_train.columns[pref_predict[1]], y_train.columns[pref_predict[2]], y_train.columns[pref_predict[3]], y_train.columns[pref_predict[4]]]
+
 
 
 set_seed(SEED)
@@ -92,16 +103,19 @@ candidate = list(np.ndarray.argmax(W, axis=0))[:NMF_ASK]
 
 # ゲテモノ*2, 人気*1
 # candidate = [74,56,50]
+# candidate = [74,56]
 
 user_pref = []
 
 
 def main():
 	for i in range(NMF_ASK):
+		show_image(candidate[i])
 		user_pref.append(user_ask(candidate[i]))
 
 	for i in range(PREF_ASK):
-		predict_pref()
+		ask_id = predict_pref_pre()
+		predict_pref(ask_id)
 
 	predict_finalpref()
 
