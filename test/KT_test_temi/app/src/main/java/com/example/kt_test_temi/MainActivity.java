@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.listeners.OnRobotReadyListener;
 import com.robotemi.sdk.navigation.model.Position;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity implements OnRobotReadyListener {
     private static Robot mRobot;
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             Log.i(TAG, "Robot is ready");
             mRobot.hideTopBar(); // hide temi's ActionBar when skill is active
 
-            mRobot.goTo("ペッパー");
+//            mRobot.goTo("ペッパー");
 
             float x = mRobot.getPosition().getX();
             float y = mRobot.getPosition().getY();
@@ -52,6 +55,28 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
             Log.i(TAG, Double.toString(x) + " / " + Double.toString(y) + " / " + Double.toString(yaw) + " / " + Integer.toString(tilt));
 
+
+
+            // ImageViewの用意
+            ImageView myImage= findViewById(R.id.myImage);
+
+            // 画像名
+            String imageName = "f55";
+
+            // 画像のリソースIDを取得
+            int resId = getResources().getIdentifier(imageName, "drawable", getPackageName());
+
+            // ImageViewに画像をセット
+            myImage.setImageResource(resId);
+
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+//            myImage.setImageResource(0);
 
         }
     }

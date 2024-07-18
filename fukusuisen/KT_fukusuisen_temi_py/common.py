@@ -7,7 +7,7 @@ import commonGPT
 
 # IPアドレスを変更する必要アリ
 ip = "192.168.1.64"
-port = 5530
+port = 5531
 
 
 # 音声認識

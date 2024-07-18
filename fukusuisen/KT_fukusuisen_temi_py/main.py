@@ -80,15 +80,15 @@ def main(mode):
                 f.write("recommend: " + str(recommend) + '\n')
 
                 generated_text = generated_text + ":move:" + str(recommend[0])
-                common.send_id(recommend[0])
+                # common.set_id(recommend[0])
 
             if turn == 7:
                 generated_text = generated_text + ":move:" + str(recommend[1])
-                common.send_id(recommend[1])
+                # common.set_id(recommend[1])
 
             if turn == 8:
                 generated_text = generated_text + ":move:" + str(recommend[2])
-                common.send_id(recommend[2])
+                # common.set_id(recommend[2])
 
 
         # 感想
@@ -116,7 +116,7 @@ def main(mode):
                 print("<introduce_clothes_more>")
                 generated_text = commonGPT.GPT_introduce_clothes_more(input_prompt) # | はここに移動を挟むことを表す。javaの方でsplitする
                 generated_text = generated_text + ":move:" + str(recommend[3])
-                common.send_id(recommend[3])
+                # common.set_id(recommend[3])
 
         # もう一回聞く
         elif turn == 11 and good == False:
