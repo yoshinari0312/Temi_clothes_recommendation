@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static Robot mRobot;
-    int portNum = 5531;
+    int portNum = 5530;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

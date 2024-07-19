@@ -23,7 +23,7 @@ def GPT_greet_and_question(prompt):
     
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -68,7 +68,7 @@ def GPT_introduce_clothes(prompt):
 
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -108,7 +108,7 @@ def GPT_result(prompt):
 
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -156,7 +156,7 @@ def GPT_introduce_clothes_more(prompt):
     
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -203,7 +203,7 @@ def GPT_talk(prompt):
     
     # GPT-4モデルを使用してテキストを生成
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -232,7 +232,7 @@ def GPT_score_judge(prompt):
                 ・半角数字のみで回答してください。"
 
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
@@ -271,7 +271,7 @@ def GPT_reaction_judge(prompt):
                 user「あんまり」 -> 0"
 
     response = openai_client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
         {
             "role": "system",
