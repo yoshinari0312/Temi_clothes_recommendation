@@ -162,11 +162,11 @@ def main(mode):
 
     if mode == True:
         input_prompt = common.record()
-        input_prompt = common.text_modify(input_prompt)
     else:
         input_prompt = input("[YOU] ")
 
     if input_prompt != None: # 入力があった場合
+        input_prompt = common.text_modify(input_prompt)
         f.write("[YOU] " + input_prompt + '\n')
         q = Queue()
 
