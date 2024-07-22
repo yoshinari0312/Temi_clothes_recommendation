@@ -162,6 +162,7 @@ def main(mode):
 
     if mode == True:
         input_prompt = common.record()
+        input_prompt = common.text_modify(input_prompt)
     else:
         input_prompt = input("[YOU] ")
 

@@ -39,30 +39,11 @@ def split_text(text):
     return splited_text
 
 
-# 文に方向を示す語があるかチェック（ジェスチャーラベル）
-def text_judge(text):
-    #最初に見つけた方向を採用(多分)
-    if "左" in text:
-        text = text + ":left"
-        return text
-    elif "右" in text:
-        text = text + ":right"
-        return text
-    elif "上" in text:
-        text = text + ":up"
-        return text
-    elif "下" in text:
-        text = text + ":down"
-        return text
-    elif "建物" in text:
-        text = text + ":building"
-        return text
-    elif "進" in text:
-        text = text + ":straight"
-        return text
-
-    #方向を示す語がなかった場合
-    text = text + ":none"
+# 認識結果を改変
+def text_modify(text):
+    text = text.replace('qoo','9')
+    text = text.replace('発展','8点')
+    
     return text
 
 
