@@ -7,7 +7,7 @@ import commonGPT
 
 # IPアドレスを変更する必要アリ
 ip = "192.168.1.64"
-port = 5530
+port = 5531
 
 
 # 音声認識
@@ -67,13 +67,13 @@ def text_judge(text):
 
 
 def set_id(id):
-    server_url = 'http://localhost:4999/set_id'
-    response = requests.post(server_url, json={'id': id})
+    server_url = 'http://192.168.1.80:4999/set_id'
+    response = requests.post(server_url, json={'id': int(id)})
     # if response.status_code == 200:
     #     print("ID set successfully")
     # else:
     #     print(f"Failed to set ID: {response.status_code}, {response.text}")
 
 def process_id():
-    server_url = 'http://localhost:4999/process_id'
+    server_url = 'http://192.168.1.80:4999/process_id'
     response = requests.get(server_url)
