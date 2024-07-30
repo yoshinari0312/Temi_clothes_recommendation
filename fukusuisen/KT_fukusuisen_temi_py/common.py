@@ -3,6 +3,7 @@ from colorama import Fore, Back, Style
 import re
 import random
 import requests
+import playsound
 import commonGPT
 
 # IPアドレスを変更する必要アリ
@@ -17,6 +18,7 @@ def record():
     try:
         with sr.Microphone() as source:
             print(Fore.YELLOW + "[発言してください]" + Style.RESET_ALL)
+            playsound.playsound("startrecognition.mp3")
             #input() #これがないと，pepperが喋ってる最中に録音が始まり，pepperが喋ってる内容を文字起こししちゃう
             ## 録音開始
             audio = recognizer.listen(source, timeout = 30)
@@ -41,8 +43,10 @@ def split_text(text):
 
 # 認識結果を改変
 def text_modify(text):
-    text = text.replace('qoo','9')
+    text = text.replace('qoo 10','9点').replace('Qoo 10','9点')
     text = text.replace('発展','8点')
+    text = text.replace('一転','1点')
+    text = text.replace('一','1').replace('二','2').replace('三','3').replace('四','4').replace('五','5').replace('六','6').replace('七','7').replace('八','8').replace('九','9').replace('十','10')
     
     return text
 
