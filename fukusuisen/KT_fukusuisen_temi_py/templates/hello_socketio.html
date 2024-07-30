@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ディスプレイ</title>
+    <!-- JQueryの読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous">
+    </script>
+    <!-- SocketIOの読み込み -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+        integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+        crossorigin="anonymous">
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        img {
+            width: auto;
+            height: 700px;
+            border: 1px solid #ccc;
+            display: none; /* 初期状態で非表示にする */
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <!-- 画像を動的に表示 -->
+        <div class="Image">
+            <img id="dynamicImage" alt="clothes Image">
+        </div>
+    </div>
+
+    <script type="text/javascript" charset="utf-8">
+        // socket io用
+        var socket = io();
+
+        // ページのロード/リロード時に実行される
+        $(document).ready(function() {
+            socket.emit('reloaded');
+        });
+
+        socket.on('update_image', function (msg) {
+            // 新しい画像のパスを設定
+            var imgElement = document.getElementById('dynamicImage');
+            imgElement.src = msg.image_src;
+            // 画像を表示
+            imgElement.style.display = 'block';
+            socket.emit('reloaded');
+        });
+    </script>
+</body>
+
+</html>
