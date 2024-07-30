@@ -48,7 +48,7 @@ def text_modify(text):
 
 
 def set_id(id):
-    server_url = 'http://192.168.1.80:4999/set_id'
+    server_url = 'http://192.168.1.59:4999/set_id'
     response = requests.post(server_url, json={'id': int(id)})
     # if response.status_code == 200:
     #     print("ID set successfully")
@@ -56,5 +56,5 @@ def set_id(id):
     #     print(f"Failed to set ID: {response.status_code}, {response.text}")
 
 def process_id():
-    server_url = 'http://192.168.1.80:4999/process_id'
+    server_url = 'http://192.168.1.59:4999/process_id'
     response = requests.get(server_url)
