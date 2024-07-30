@@ -241,11 +241,11 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                             }else if(id == 71){
                                                 currentDestination = "服2";
                                             }else if(1 <= id && id <= 32){
-                                                currentDestination = "ディズプレイ1";
+                                                currentDestination = "ディスプレイ1";
                                             }else if(33 <= id && id <= 66){
-                                                currentDestination = "ディズプレイ2";
+                                                currentDestination = "ディスプレイ2";
                                             }else{
-                                                currentDestination = "ディズプレイ3";
+                                                currentDestination = "ディスプレイ3";
                                             }
 
                                             if(!(currentDestination.equals(pastDestination))){
