@@ -14,6 +14,7 @@ import com.robotemi.sdk.TtsRequest;
 import com.robotemi.sdk.listeners.OnRobotReadyListener;
 import com.robotemi.sdk.listeners.OnMovementStatusChangedListener;
 import com.robotemi.sdk.navigation.listener.OnDistanceToDestinationChangedListener;
+import com.robotemi.sdk.navigation.model.Position;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,9 +22,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.IDN;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
@@ -88,8 +91,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             Log.i(TAG, "Robot is ready");
             mRobot.hideTopBar(); // hide temi's ActionBar when skill is active
 
-            TtsRequest ttsRequest = TtsRequest.create("プログラムを起動しましたわああああああ", false, TtsRequest.Language.JA_JP);
+            TtsRequest ttsRequest = TtsRequest.create("プログラムを起動しました", false, TtsRequest.Language.JA_JP);
             mRobot.speak(ttsRequest);
+
 
             //temiの顔
             // ImageViewの用意
@@ -101,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             // ImageViewに画像をセット
             myImage.setImageResource(resId);
             pastDestination = "";
+
+
+            new sendData().execute();
 
 
             // メイン(UI)スレッドでHandlerのインスタンスを生成する
@@ -118,9 +125,10 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                 // 2.クライアントからの接続を待ち受け（accept）
                                 // -----------------------------------------
                                 Socket sc = server.accept();
-                                Log.d("TCP status", "connected");
+                                Log.d("TCP status", sc.toString());
                                 BufferedReader reader = null;
                                 BufferedWriter bw = null;
+
                                 // -----------------------------------------
                                 // 3.クライアントからの接続ごとにスレッドで通信処理を実行
                                 // -----------------------------------------
@@ -255,7 +263,8 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                                     try {
                                                         while (isMoving) {
                                                             Log.i(TAG, "Waiting for movement to complete...");
-                                                            Thread.sleep(100);
+                                                            new sendData().execute();
+                                                            Thread.sleep(500);
                                                         }
                                                         ttsQueue.add(move_text[1]);
                                                         ttsQueue.add(""); // ダミーのキュー
@@ -334,141 +343,22 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         }
     }
 
-    // いらない
-    // ネットワーク操作はメインスレッドでやるとエラーが出るので、非同期関数で完全にラップする
-    private class TCPServer extends AsyncTask<Void, Void, Void> {
+
+        private class sendData extends AsyncTask<Void, Void, Void> {
         String result;
         @SuppressLint("WrongThread")
         @Override
         protected Void doInBackground(Void... voids) {
-            try (ServerSocket server = new ServerSocket(portNum)) {
-                while (true) {
-                    try {
-                        // -----------------------------------------
-                        // 2.クライアントからの接続を待ち受け（accept）
-                        // -----------------------------------------
-                        Socket sc = server.accept();
-                        Log.d("TCP status", "connected");
-                        BufferedReader reader = null;
-                        BufferedWriter bw = null;
-                        // -----------------------------------------
-                        // 3.クライアントからの接続ごとにスレッドで通信処理を実行
-                        // -----------------------------------------
-                        try {
-                            // クライアントからの受取用
-                            reader = new BufferedReader(new InputStreamReader(sc.getInputStream()));
-                            System.out.println(reader);
-                            // クライアントに送る用
-                            bw = new BufferedWriter(new OutputStreamWriter(sc.getOutputStream()));
+            try (Socket socket2 = new Socket("192.168.1.59", 5540);
+                 PrintWriter writer = new PrintWriter(socket2.getOutputStream(), true);
+                 BufferedReader reader = new BufferedReader(new InputStreamReader(socket2.getInputStream()));
+                 // キーボード入力用のリーダーの作成
+                 BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in)))
+            {
+                float x = mRobot.getPosition().getX();
+                float y = mRobot.getPosition().getY();
+                writer.println(Double.toString(x) + ", " + Double.toString(y));
 
-                            String received = reader.readLine();
-
-                            if (received != null) {
-                                System.out.println(received);
-                                Log.i(TAG, received);
-
-                                String[] command = received.split(":");
-
-                                // 発話とジェスチャを同時にさせる
-                                if (command[1].equals("none")) {
-                                    ttsQueue.add(command[0]);
-                                    ttsQueue.add(""); // ダミーのキュー
-
-                                    // Command robot to speak
-                                    processNextTTSQueue();
-
-                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
-                                    while (!ttsQueue.isEmpty()) {
-                                    }
-                                    bw.write("OK" + "\n");
-                                    bw.flush();
-                                }
-                                else if(command[1].equals("picture")){
-
-
-                                    // 画像の表示
-
-
-                                    ttsQueue.add(command[0]);
-                                    ttsQueue.add(""); // ダミーのキュー
-
-                                    // Command robot to speak
-                                    processNextTTSQueue();
-
-                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
-                                    while (!ttsQueue.isEmpty()) {
-                                    }
-                                    bw.write("OK" + "\n");
-                                    bw.flush();
-                                }
-                                else if(command[1].equals("move")){
-                                    int id = Integer.parseInt(command[2]);
-                                    System.out.println("id is:" + id);
-                                    CountDownLatch latch = new CountDownLatch(1);
-
-                                    String[] move_text = command[0].split(";");
-
-                                    ttsQueue.add(move_text[0]);
-                                    ttsQueue.add(""); // ダミーのキュー
-
-                                    processNextTTSQueue();
-
-                                    while (!ttsQueue.isEmpty()) {
-                                        Thread.sleep(100);
-                                    }
-
-                                    isMoving = true;
-                                    if(id == 70){
-                                        currentDestination = "服1";
-                                    }else if(id == 71){
-                                        currentDestination = "服2";
-                                    }else if(1 <= id && id <= 32){
-                                        currentDestination = "ディスプレイ1";
-                                    }else if(33 <= id && id <= 66){
-                                        currentDestination = "ディスプレイ2";
-                                    }else{
-                                        currentDestination = "ディスプレイ3";
-                                    }
-                                    mRobot.goTo(currentDestination);
-
-                                    new Thread(() -> {
-                                        try {
-                                            while (isMoving) {
-                                                Log.i(TAG, "Waiting for movement to complete...");
-                                                Thread.sleep(100);
-                                            }
-                                            ttsQueue.add(move_text[1]);
-                                            ttsQueue.add(""); // ダミーのキュー
-                                            processNextTTSQueue();
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        latch.countDown();
-                                    }).start();
-
-                                    latch.await();
-
-                                    while (!ttsQueue.isEmpty()) {
-                                        Thread.sleep(100);
-                                    }
-
-                                    bw.write("OK" + "\n");
-                                    bw.flush();
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        } finally {
-                            // リソースの解放
-                            reader.close();
-                            bw.close();
-                            sc.close();
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        break;
-                    }
-                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -476,9 +366,157 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         }
         @Override
         protected void onPostExecute(Void aVoid) {
-            //textMessage.setText(result);
-            //textLoad.setText("Finished");
-            super.onPostExecute(aVoid);
+
         }
     }
+
+//    // いらない
+//    // ネットワーク操作はメインスレッドでやるとエラーが出るので、非同期関数で完全にラップする
+//    private class TCPServer extends AsyncTask<Void, Void, Void> {
+//        String result;
+//        @SuppressLint("WrongThread")
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            try (ServerSocket server = new ServerSocket(portNum)) {
+//                while (true) {
+//                    try {
+//                        // -----------------------------------------
+//                        // 2.クライアントからの接続を待ち受け（accept）
+//                        // -----------------------------------------
+//                        Socket sc = server.accept();
+//                        Log.d("TCP status", "connected");
+//                        BufferedReader reader = null;
+//                        BufferedWriter bw = null;
+//                        // -----------------------------------------
+//                        // 3.クライアントからの接続ごとにスレッドで通信処理を実行
+//                        // -----------------------------------------
+//                        try {
+//                            // クライアントからの受取用
+//                            reader = new BufferedReader(new InputStreamReader(sc.getInputStream()));
+//                            System.out.println(reader);
+//                            // クライアントに送る用
+//                            bw = new BufferedWriter(new OutputStreamWriter(sc.getOutputStream()));
+//
+//                            String received = reader.readLine();
+//
+//                            if (received != null) {
+//                                System.out.println(received);
+//                                Log.i(TAG, received);
+//
+//                                String[] command = received.split(":");
+//
+//                                // 発話とジェスチャを同時にさせる
+//                                if (command[1].equals("none")) {
+//                                    ttsQueue.add(command[0]);
+//                                    ttsQueue.add(""); // ダミーのキュー
+//
+//                                    // Command robot to speak
+//                                    processNextTTSQueue();
+//
+//                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+//                                    while (!ttsQueue.isEmpty()) {
+//                                    }
+//                                    bw.write("OK" + "\n");
+//                                    bw.flush();
+//                                }
+//                                else if(command[1].equals("picture")){
+//
+//
+//                                    // 画像の表示
+//
+//
+//                                    ttsQueue.add(command[0]);
+//                                    ttsQueue.add(""); // ダミーのキュー
+//
+//                                    // Command robot to speak
+//                                    processNextTTSQueue();
+//
+//                                    // speakメソッドは非同期なので、キューが空になるまで（喋り終わるまで）待つ
+//                                    while (!ttsQueue.isEmpty()) {
+//                                    }
+//                                    bw.write("OK" + "\n");
+//                                    bw.flush();
+//                                }
+//                                else if(command[1].equals("move")){
+//                                    int id = Integer.parseInt(command[2]);
+//                                    System.out.println("id is:" + id);
+//                                    CountDownLatch latch = new CountDownLatch(1);
+//
+//                                    String[] move_text = command[0].split(";");
+//
+//                                    ttsQueue.add(move_text[0]);
+//                                    ttsQueue.add(""); // ダミーのキュー
+//
+//                                    processNextTTSQueue();
+//
+//                                    while (!ttsQueue.isEmpty()) {
+//                                        Thread.sleep(100);
+//                                    }
+//
+//                                    isMoving = true;
+//                                    if(id == 70){
+//                                        currentDestination = "服1";
+//                                    }else if(id == 71){
+//                                        currentDestination = "服2";
+//                                    }else if(1 <= id && id <= 32){
+//                                        currentDestination = "ディスプレイ1";
+//                                    }else if(33 <= id && id <= 66){
+//                                        currentDestination = "ディスプレイ2";
+//                                    }else{
+//                                        currentDestination = "ディスプレイ3";
+//                                    }
+//                                    mRobot.goTo(currentDestination);
+//
+//                                    new Thread(() -> {
+//                                        try {
+//                                            while (isMoving) {
+//                                                Log.i(TAG, "Waiting for movement to complete...");
+//                                                Thread.sleep(100);
+//                                            }
+//                                            ttsQueue.add(move_text[1]);
+//                                            ttsQueue.add(""); // ダミーのキュー
+//                                            processNextTTSQueue();
+//                                        } catch (InterruptedException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                        latch.countDown();
+//                                    }).start();
+//
+//                                    latch.await();
+//
+//                                    while (!ttsQueue.isEmpty()) {
+//                                        Thread.sleep(100);
+//                                    }
+//
+//                                    bw.write("OK" + "\n");
+//                                    bw.flush();
+//                                }
+//                            }
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        } finally {
+//                            // リソースの解放
+//                            reader.close();
+//                            bw.close();
+//                            sc.close();
+//                        }
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                        break;
+//                    }
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            //textMessage.setText(result);
+//            //textLoad.setText("Finished");
+//            super.onPostExecute(aVoid);
+//        }
+//    }
+
+    
 }
