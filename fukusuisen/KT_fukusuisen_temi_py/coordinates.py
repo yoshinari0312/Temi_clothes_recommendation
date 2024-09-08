@@ -4,7 +4,7 @@
 # 0.ライブラリのインポートと変数定義
 import socket
 
-server_ip = "192.168.1.59"
+server_ip = "192.168.1.26"
 server_port = 5540
 listen_num = 5
 buffer_size = 1024
@@ -18,6 +18,7 @@ tcp_server.bind((server_ip, server_port))
 # 3.作成したオブジェクトを接続可能状態にする
 tcp_server.listen(listen_num)
 
+print("======coordinate 接続完了==========")
 # 4.ループして接続を待ち続ける
 while True:
     # 5.クライアントと接続する

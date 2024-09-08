@@ -328,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     @Override
     public void onDistanceToDestinationChanged(@NotNull String location, float distance) {
         Log.i(TAG, "Distance to destination (" + location + "): " + distance);
-        if (location.equals(currentDestination) && distance < 0.5) { // 0.5メートル未満の場合
+        if (location.equals(currentDestination) && distance < 1.0 && distance != 0.0) { // 0.5メートル未満の場合
             isMoving = false;
         }
     }
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         @SuppressLint("WrongThread")
         @Override
         protected Void doInBackground(Void... voids) {
-            try (Socket socket2 = new Socket("192.168.1.59", 5540);
+            try (Socket socket2 = new Socket("192.168.1.26", 5540);
                  PrintWriter writer = new PrintWriter(socket2.getOutputStream(), true);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(socket2.getInputStream()));
                  // キーボード入力用のリーダーの作成
@@ -518,5 +518,5 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 //        }
 //    }
 
-    
+
 }
