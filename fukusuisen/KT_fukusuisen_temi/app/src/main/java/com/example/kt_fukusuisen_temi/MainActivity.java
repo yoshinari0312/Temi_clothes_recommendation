@@ -44,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     private int id;
     int portNum = 5531;
 
+    private int time_count = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -244,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                             }
 
                                             isMoving = true;
+                                            time_count = 0;
+
                                             if(id == 70){
                                                 currentDestination = "服1";
                                             }else if(id == 71){
@@ -262,6 +267,11 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                                 new Thread(() -> {
                                                     try {
                                                         while (isMoving) {
+//                                                            if (time_count >= 10){
+//                                                                isMoving = false;
+//                                                            }
+                                                            time_count += 1;
+                                                            Log.i(TAG, Integer.toString(time_count));
                                                             Log.i(TAG, "Waiting for movement to complete...");
                                                             new sendData().execute();
                                                             Thread.sleep(500);
@@ -327,8 +337,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 //    }
     @Override
     public void onDistanceToDestinationChanged(@NotNull String location, float distance) {
+        time_count = 0;
         Log.i(TAG, "Distance to destination (" + location + "): " + distance);
-        if (location.equals(currentDestination) && distance < 1.0 && distance != 0.0) { // 0.5メートル未満の場合
+        if (location.equals(currentDestination) && distance < 1.5 && distance != 0.0) { // 0.5メートル未満の場合
             isMoving = false;
         }
     }
