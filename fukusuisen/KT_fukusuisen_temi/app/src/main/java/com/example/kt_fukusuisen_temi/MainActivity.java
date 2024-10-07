@@ -263,12 +263,19 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 //                                                currentDestination = "ディスプレイ3";
 //                                            }
 
-                                            if(1 <= id && id <= 33){
-                                                currentDestination = "ディスプレイ1";
-                                            }else if(34 <= id && id <= 67){
-                                                currentDestination = "ディスプレイ2";
+//                                            if(1 <= id && id <= 33){
+//                                                currentDestination = "ディスプレイ1";
+//                                            }else if(34 <= id && id <= 67){
+//                                                currentDestination = "ディスプレイ2";
+//                                            }else{
+//                                                currentDestination = "ディスプレイ3";
+//                                            }
+
+                                            // テクノモール用
+                                            if(id == 70){
+                                                currentDestination = "服1";  // テクノモール会場で設定する場所名を「服1」にする必要あり
                                             }else{
-                                                currentDestination = "ディスプレイ3";
+                                                currentDestination = "ディスプレイ1";  // テクノモール会場で設定する場所名を「ディスプレイ1」にする必要あり
                                             }
 
                                             if(!(currentDestination.equals(pastDestination))){
