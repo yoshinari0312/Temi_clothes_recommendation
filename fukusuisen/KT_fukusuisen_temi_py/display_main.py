@@ -46,16 +46,16 @@ def process_id():
 
     id = global_id
 
-    if id == 70:
-        app.logger.debug("70です")
-    elif id == 71:
-        app.logger.debug("71です")
-    elif 1 <= id <= 32:
+#     if id == 70:
+#         app.logger.debug("70です")
+#     elif id == 71:
+#         app.logger.debug("71です")
+    if 1 <= id <= 33:
         server_url = 'http://localhost:5001/update_image'
-        app.logger.debug("1から32です")
-    elif 33 <= id <= 66:
+        app.logger.debug("1から33です")
+    elif 34 <= id <= 67:
         server_url = 'http://localhost:5002/update_image'
-        app.logger.debug("33から66です")
+        app.logger.debug("33から67です")
     else:
         server_url = 'http://localhost:5003/update_image'
         app.logger.debug("67から100です")
@@ -71,4 +71,4 @@ def process_id():
 
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=4999)
+    socketio.run(app, host='0.0.0.0', port=4999, allow_unsafe_werkzeug=True)

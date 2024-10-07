@@ -9,7 +9,7 @@ import cv2
 
 #seed決定
 SEED = random.randint(0, 10**9)
-# SEED = 1
+SEED = 0
 
 # NMFで特徴の強いのをいくつ聞くか
 NMF_ASK = 2
@@ -44,8 +44,20 @@ def predict_pref_pre():
 
 	pref_predict = y_pred[0].argsort()[::-1]
 
-	ask_id = y_train.columns[pref_predict[0]]
+# 	ask_id = y_train.columns[pref_predict[0]]
 	#N番目に好みそうなのは，y_train.columns[pref_predict[N]]で表せる
+
+	train_cov = train.cov()
+
+	user_cov = []
+	for j in range(100):
+		if j+1 in candidate:
+			continue
+		user_cov.append((j+1, train_cov[candidate[-1]].iloc[j]))
+
+	user_cov.sort(key=lambda x:x[1])
+
+	ask_id = user_cov[0][0]
 
 	candidate.append(ask_id)
 	show_image(ask_id)
@@ -82,6 +94,7 @@ def predict_finalpref():
 	cv2.imshow(f"image_{final_id}", final_image)
 	cv2.waitKey(300)
 
+# 	return [77,69,71,50] #(A)
 	return [final_id, y_train.columns[pref_predict[1]], y_train.columns[pref_predict[2]], y_train.columns[pref_predict[3]], y_train.columns[pref_predict[4]]]
 
 
@@ -99,7 +112,9 @@ nmf = sklearn.decomposition.NMF(n_components=10, random_state=SEED)
 W = nmf.fit_transform(train.T)
 
 #NMFで最も特徴の強いのを聞く
-candidate = list(np.ndarray.argmax(W, axis=0))[:NMF_ASK]
+# candidate = list(np.ndarray.argmax(W, axis=0))[:NMF_ASK]
+
+candidate = [50]
 
 # ゲテモノ*2, 人気*1
 # candidate = [74,56,50]
