@@ -57,7 +57,7 @@ def main(mode):
 
             print("<greet_and_question>")
             generated_text = commonGPT.GPT_greet_and_question(input_prompt)
-            ask_id = predict.show_image(predict.candidate[1])
+            ask_id = predict.predict_pref_pre()
             generated_text = generated_text + ":picture:" + str(ask_id)
             q.put(generated_text)
             turn += 1

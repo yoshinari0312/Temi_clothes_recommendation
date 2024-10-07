@@ -43,8 +43,10 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     private String pastDestination;
     private int id;
     int portNum = 5531;
-
+    private String KAWASAKIsan_IP = "192.168.1.84";
     private int time_count = 0;
+
+    private boolean isSendData = true; // action graphが狂ってたらこれをfalseにする。
 
 
     @Override
@@ -249,13 +251,21 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                             isMoving = true;
                                             time_count = 0;
 
-                                            if(id == 70){
-                                                currentDestination = "服1";
-                                            }else if(id == 71){
-                                                currentDestination = "服2";
-                                            }else if(1 <= id && id <= 32){
+//                                            if(id == 70){
+//                                                currentDestination = "服1";
+//                                            }else if(id == 71){
+//                                                currentDestination = "服2";
+//                                            }else if(1 <= id && id <= 32){
+//                                                currentDestination = "ディスプレイ1";
+//                                            }else if(33 <= id && id <= 66){
+//                                                currentDestination = "ディスプレイ2";
+//                                            }else{
+//                                                currentDestination = "ディスプレイ3";
+//                                            }
+
+                                            if(1 <= id && id <= 33){
                                                 currentDestination = "ディスプレイ1";
-                                            }else if(33 <= id && id <= 66){
+                                            }else if(34 <= id && id <= 67){
                                                 currentDestination = "ディスプレイ2";
                                             }else{
                                                 currentDestination = "ディスプレイ3";
@@ -267,13 +277,15 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                                                 new Thread(() -> {
                                                     try {
                                                         while (isMoving) {
-//                                                            if (time_count >= 10){
-//                                                                isMoving = false;
-//                                                            }
+                                                            if (time_count >= 10){
+                                                                isMoving = false;
+                                                            }
                                                             time_count += 1;
                                                             Log.i(TAG, Integer.toString(time_count));
                                                             Log.i(TAG, "Waiting for movement to complete...");
-                                                            new sendData().execute();
+                                                            if (isSendData == true){
+                                                                new sendData().execute();
+                                                            }
                                                             Thread.sleep(500);
                                                         }
                                                         ttsQueue.add(move_text[1]);
@@ -339,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     public void onDistanceToDestinationChanged(@NotNull String location, float distance) {
         time_count = 0;
         Log.i(TAG, "Distance to destination (" + location + "): " + distance);
-        if (location.equals(currentDestination) && distance < 1.5 && distance != 0.0) { // 0.5メートル未満の場合
+        if (location.equals(currentDestination) && distance < 1.0 && distance != 0.0) { // 0.5メートル未満の場合
             isMoving = false;
         }
     }
@@ -360,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         @SuppressLint("WrongThread")
         @Override
         protected Void doInBackground(Void... voids) {
-            try (Socket socket2 = new Socket("192.168.1.26", 5540);
+            try (Socket socket2 = new Socket(KAWASAKIsan_IP, 5540);
                  PrintWriter writer = new PrintWriter(socket2.getOutputStream(), true);
                  BufferedReader reader = new BufferedReader(new InputStreamReader(socket2.getInputStream()));
                  // キーボード入力用のリーダーの作成
