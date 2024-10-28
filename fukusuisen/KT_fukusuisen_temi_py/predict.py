@@ -22,8 +22,8 @@ def set_seed(seed):
 
 def show_image(id):
 	ask_image = cv2.imread(f"images/{id}.jpg")
-	cv2.imshow(f"image_{id}", ask_image)
-	cv2.waitKey(300)
+	# cv2.imshow(f"image_{id}", ask_image)
+	# cv2.waitKey(300)
 	return id
 
 def user_ask(id):
@@ -91,8 +91,8 @@ def predict_finalpref():
 
 	# 最も好む服
 	final_image = cv2.imread(f"images/{final_id}.jpg")
-	cv2.imshow(f"image_{final_id}", final_image)
-	cv2.waitKey(300)
+	# cv2.imshow(f"image_{final_id}", final_image)
+	# cv2.waitKey(300)
 
 # 	return [77,69,71,50] #(A)
 	return [final_id, y_train.columns[pref_predict[1]], y_train.columns[pref_predict[2]], y_train.columns[pref_predict[3]], y_train.columns[pref_predict[4]]]

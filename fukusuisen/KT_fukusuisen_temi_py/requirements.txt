@@ -38,18 +38,18 @@ fonttools==4.39.3
 frozenlist==1.4.0
 fsspec==2024.3.1
 ftfy==6.2.0
-gitdb==4.0.11
-GitPython==3.1.32
-google-api-core==2.12.0
-google-auth==2.23.4
-google-cloud-texttospeech==2.14.2
-googleapis-common-protos==1.61.0
-googlemaps==4.10.0
-gradio==3.41.2
-gradio_client==0.5.0
-grpcio==1.59.2
-grpcio-status==1.59.2
-gTTS==2.4.0
+# gitdb==4.0.11
+# GitPython==3.1.32
+# google-api-core==2.12.0
+# google-auth==2.23.4
+# google-cloud-texttospeech==2.14.2
+# googleapis-common-protos==1.61.0
+# googlemaps==4.10.0
+# gradio==3.41.2
+# gradio_client==0.5.0
+# grpcio==1.59.2
+# grpcio-status==1.59.2
+# gTTS==2.4.0
 h11==0.12.0
 httpcore==0.15.0
 httpx==0.24.1
@@ -91,7 +91,7 @@ pillow-avif-plugin==1.4.3
 pipenv==2023.2.18
 platformdirs==3.0.0
 plotly==5.14.1
-ply @ file:///private/tmp/python-ply-20231123-5152-rbyrbt/ply-3.11
+# ply @ file:///private/tmp/python-ply-20231123-5152-rbyrbt/ply-3.11
 pretty-errors==1.2.25
 proto-plus==1.22.3
 protobuf==3.20.0
@@ -99,7 +99,7 @@ psutil==5.9.5
 pyasn1==0.5.0
 pyasn1-modules==0.3.0
 PyAudio==0.2.13
-pycairo @ file:///private/tmp/py3cairo-20240213-5663-9p1d9y/pycairo-1.26.0
+# pycairo @ file:///private/tmp/py3cairo-20240213-5663-9p1d9y/pycairo-1.26.0
 pydantic==1.10.15
 pydantic_core==2.10.1
 pydub==0.25.1
@@ -123,7 +123,7 @@ scikit-learn==1.4.2
 scipy==1.13.0
 semantic-version==2.10.0
 sentencepiece==0.2.0
-sip @ file:///private/tmp/sip-20240214-4745-5stp6w/sip-6.8.3
+# sip @ file:///private/tmp/sip-20240214-4745-5stp6w/sip-6.8.3
 six==1.16.0
 smmap==5.0.1
 sniffio==1.3.0

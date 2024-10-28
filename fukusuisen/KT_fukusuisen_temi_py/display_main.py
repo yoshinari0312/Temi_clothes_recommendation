@@ -1,5 +1,5 @@
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import logging
 from flask_socketio import SocketIO
 
@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/')
 def index():
-    return "A"
+    return render_template('speech_recognition.html')
 
 
 @app.route('/set_id', methods=['POST'])

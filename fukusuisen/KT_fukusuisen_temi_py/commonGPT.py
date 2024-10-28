@@ -1,9 +1,13 @@
 import os
 from openai import OpenAI
 import random
+from dotenv import load_dotenv  # dotenvのインポート
+
+# .envファイルをロード
+load_dotenv()
 
 # OpenAI key
-openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
+openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 conversation_history = [] # 会話履歴を格納するためのリストを初期化
 conversation_history_tmp = [] # 会話履歴を格納するためのリスト（定期的にリセットする）
 
